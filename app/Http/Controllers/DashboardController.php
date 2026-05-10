@@ -71,6 +71,9 @@ class DashboardController extends Controller
             // Assume manager is assigned to a branch (for demo, we pick the first branch or let user select)
             // In a real app, User model would have branch_id
             $branch = Branch::first(); 
+            if (!$branch) {
+                $branch = Branch::create(['branch_name' => 'Main Branch', 'location' => 'Main Location', 'manager_name' => $user->name]);
+            }
             $data = [
                 'branch' => $branch,
                 'inventory' => Inventory::with('product')->where('branch_id', $branch->id)->get(),

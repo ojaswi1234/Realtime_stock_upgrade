@@ -6,6 +6,8 @@
     pkgs.php83
     pkgs.mysql
   ];
+
+  services.mysql.enable = true;
   idx.extensions = [
     "svelte.svelte-vscode"
     "vue.volar"

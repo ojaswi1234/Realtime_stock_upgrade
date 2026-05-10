@@ -45,6 +45,9 @@
             </div>
             <button type="submit" class="btn">Log In</button>
         </form>
+        <p style="text-align: center; margin-top: 15px; font-size: 14px;">
+            Don't have an account? <a href="{{ route('register') }}">Register</a>
+        </p>
         <p style="text-align: center; margin-top: 15px; font-size: 14px;">Use <b>admin@gmail.com</b> or <b>manager@gmail.com</b><br>Password: <b>password</b></p>
     </div>
 </body>
