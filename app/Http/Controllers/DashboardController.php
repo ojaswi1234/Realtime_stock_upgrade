@@ -42,7 +42,7 @@ class DashboardController extends Controller
             
             // Top products
             $topProducts = Sale::with('product')
-                ->select('product_id', DB::raw('SUM(quantity) as total_qty'))
+                ->select('product_id', DB::raw('SUM(quantity_sold) as total_qty'))
                 ->groupBy('product_id')
                 ->orderBy('total_qty', 'DESC')
                 ->take(5)

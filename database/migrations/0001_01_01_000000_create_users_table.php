@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');            $table->string('role')->default('store_manager'); // admin, store_manager            $table->rememberToken();
+            $table->string('password');
+            $table->string('role')->default('store_manager'); // admin, store_manager
+            $table->rememberToken();
             $table->timestamps();
         });
 

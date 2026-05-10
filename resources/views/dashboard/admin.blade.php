@@ -4,9 +4,18 @@
 <div class="header">
     <h1 style="font-weight: bold; font-size: 2rem;">Real-Time Stock Update Dashboard</h1>
     <div style="display: flex; gap: 10px;">
-        <a href="{{ route('export.products') }}" class="btn btn-sm btn-secondary">📊 Export Products</a>
-        <a href="{{ route('export.inventory') }}" class="btn btn-sm btn-secondary">📦 Export Inventory</a>
-        <a href="{{ route('export.sales') }}" class="btn btn-sm btn-secondary">💰 Export Sales</a>
+        <a href="{{ route('export.products') }}" class="btn btn-sm btn-secondary">
+            <svg style="width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; margin-right: 4px;" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M8 17h8"/></svg>
+            Export Products
+        </a>
+        <a href="{{ route('export.inventory') }}" class="btn btn-sm btn-secondary">
+            <svg style="width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; margin-right: 4px;" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            Export Inventory
+        </a>
+        <a href="{{ route('export.sales') }}" class="btn btn-sm btn-secondary">
+            <svg style="width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; margin-right: 4px;" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Export Sales
+        </a>
     </div>
 </div>
 
@@ -18,7 +27,9 @@
                 <h3 style="font-weight: bold; margin: 0;">Total Products</h3>
                 <p style="font-size: 2.5rem; font-weight: bold; margin: 5px 0;">{{ $total_products }}</p>
             </div>
-            <div class="stock-arrow up">📈</div>
+            <div class="stock-arrow up">
+                <svg style="width: 24px; height: 24px; fill: none; stroke: var(--success); stroke-width: 2;" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
         </div>
     </div>
     <div class="card card-stat bg-success">
@@ -27,7 +38,9 @@
                 <h3 style="font-weight: bold; margin: 0;">Total Branches</h3>
                 <p style="font-size: 2.5rem; font-weight: bold; margin: 5px 0;">{{ $total_branches }}</p>
             </div>
-            <div class="stock-arrow up">🌱</div>
+            <div class="stock-arrow up">
+                <svg style="width: 24px; height: 24px; fill: none; stroke: var(--success); stroke-width: 2;" viewBox="0 0 24 24"><path d="M12 22v-9"/><path d="M12 13C8.5 13 6 10.5 6 7s2.5-6 6-6 6 2.5 6 6-2.5 6-6 6z"/><path d="M4.5 14.5A4.5 4.5 0 0 1 9 10a4.5 4.5 0 0 1 4.5 4.5A4.5 4.5 0 0 1 9 19a4.5 4.5 0 0 1-4.5-4.5z"/></svg>
+            </div>
         </div>
     </div>
     <div class="card card-stat bg-warning">
@@ -36,10 +49,15 @@
                 <h3 style="font-weight: bold; margin: 0;">Low Stock Alerts</h3>
                 <p style="font-size: 2.5rem; font-weight: bold; margin: 5px 0;">{{ $low_stock_count }}</p>
                 @if($low_stock_count > 0)
-                    <span class="badge-alert">⚠️ Action Required</span>
+                    <span class="badge-alert" style="display: inline-flex; align-items: center; gap: 4px;">
+                        <svg style="width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2;" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        Action Required
+                    </span>
                 @endif
             </div>
-            <div class="stock-arrow down">📉</div>
+            <div class="stock-arrow down">
+                <svg style="width: 24px; height: 24px; fill: none; stroke: var(--danger); stroke-width: 2;" viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+            </div>
         </div>
     </div>
 </div>
@@ -70,7 +88,9 @@
                 <h5 style="margin: 0; font-weight: bold;">{{ $product->name }}</h5>
                 <p style="margin: 5px 0; color: var(--text-muted);">SKU: {{ $product->sku }}</p>
                 <p style="margin: 5px 0; color: var(--danger); font-weight: bold;">Stock: {{ $product->quantity }} units</p>
-                <div class="stock-arrow down">🔴</div>
+                <div class="stock-arrow down">
+                    <svg style="width: 20px; height: 20px; fill: none; stroke: var(--danger); stroke-width: 2;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
             </div>
             @endforeach
         </div>
@@ -89,12 +109,16 @@
                     <span style="color: var(--text-muted);">@ {{ $update->branch->branch_name }}</span>
                 </div>
                 <div style="text-align: right;">
-                    <span class="{{ $update->type === 'addition' ? 'profit' : 'loss' }}">
+                    <span class="{{ $update->type === 'addition' ? 'profit' : 'loss' }}" style="display: flex; align-items: center; justify-content: flex-end; gap: 4px;">
                         {{ $update->type === 'addition' ? '+' : '-' }}{{ $update->quantity }}
+                        <div class="stock-arrow {{ $update->type === 'addition' ? 'up' : 'down' }}" style="display: inline-flex;">
+                            @if($update->type === 'addition')
+                                <svg style="width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2;" viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                            @else
+                                <svg style="width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2;" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                            @endif
+                        </div>
                     </span>
-                    <div class="stock-arrow {{ $update->type === 'addition' ? 'up' : 'down' }}">
-                        {{ $update->type === 'addition' ? '⬆️' : '⬇️' }}
-                    </div>
                 </div>
             </div>
             @endforeach
@@ -178,76 +202,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-</script>
-@endsection
-            <tbody>
-                @foreach($stock_updates as $log)
-                <tr>
-                    <td>{{ $log->product->name }}</td>
-                    <td>{{ $log->branch->branch_name }}</td>
-                    <td><span class="badge {{ $log->action == 'increase' ? 'bg-success' : 'bg-info' }}">{{ $log->action }}</span></td>
-                    <td>{{ $log->quantity }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-    <div class="card" style="flex:1;">
-        <h4 style="margin-top:0; color:#e74c3c;">Low Stock Products</h4>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Branch</th>
-                    <th>Qty</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($low_stock_products as $inv)
-                <tr>
-                    <td>{{ $inv->product->name }}</td>
-                    <td>{{ $inv->branch->branch_name }}</td>
-                    <td style="color:#e74c3c; font-weight:bold;">{{ $inv->quantity }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if(typeof Chart === 'undefined') return;
-        fetch('{{ route("api.chart-data") }}')
-            .then(res => res.json())
-            .then(data => {
-                new Chart(document.getElementById('salesTrendChart'), {
-                    type: 'line',
-                    data: {
-                        labels: data.sales_trend.labels,
-                        datasets: [{
-                            label: 'Daily Sales ($)',
-                            data: data.sales_trend.data,
-                            borderColor: '#3498db',
-                            tension: 0.1,
-                            backgroundColor: 'rgba(52, 152, 219, 0.1)'
-                        }]
-                    }
-                });
-
-                new Chart(document.getElementById('topProductsChart'), {
-                    type: 'bar',
-                    data: {
-                        labels: data.top_products.labels,
-                        datasets: [{
-                            label: 'Units Sold',
-                            data: data.top_products.data,
-                            backgroundColor: '#2ecc71'
-                        }]
-                    },
-                    options: { indexAxis: 'y' }
-                });
-            });
-    });
 </script>
 @endsection
