@@ -29,15 +29,17 @@ class SaleController extends Controller
         ]);
 
         $product = Product::findOrFail($request->product_id);
-        $inventory = Inventory::where('product_id', $request->product_id)
-            ->where('branch_id', $request->branch_id)
-            ->first();
 
-        if (!$inventory || $inventory->quantity < $request->quantity_sold) {
-            return back()->with('error', 'Insufficient stock for sale.');
-        }
+        return DB::transaction(function () use ($request, $product) {
+            $inventory = Inventory::where('product_id', $request->product_id)
+                ->where('branch_id', $request->branch_id)
+                ->lockForUpdate()
+                ->first();
 
-        DB::transaction(function () use ($request, $product, $inventory) {
+            if (!$inventory || $inventory->quantity < $request->quantity_sold) {
+                return back()->with('error', 'Insufficient stock for sale.');
+            }
+
             $totalPrice = $product->price * $request->quantity_sold;
 
             Sale::create([
@@ -51,8 +53,8 @@ class SaleController extends Controller
             $inventory->decrement('quantity', $request->quantity_sold);
 
             event(new StockUpdated($inventory, "Sale: {$request->quantity_sold} x {$product->name} sold."));
-        });
 
-        return back()->with('success', 'Sale recorded successfully.');
+            return back()->with('success', 'Sale recorded successfully.');
+        });
     }
 }

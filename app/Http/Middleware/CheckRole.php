@@ -15,7 +15,15 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!$request->user() || !in_array($request->user()->role, $roles)) {
+        if (!$request->user()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        if ($request->user()->role === 'super_admin') {
+            return $next($request);
+        }
+
+        if (!in_array($request->user()->role, $roles)) {
             abort(403, 'Unauthorized action.');
         }
 

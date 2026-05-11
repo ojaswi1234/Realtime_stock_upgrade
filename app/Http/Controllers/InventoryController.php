@@ -29,16 +29,19 @@ class InventoryController extends Controller
             'action' => 'required|in:increase,decrease',
         ]);
 
-        $inventory = Inventory::firstOrCreate(
-            ['product_id' => $request->product_id, 'branch_id' => $request->branch_id],
-            ['quantity' => 0]
-        );
+        return DB::transaction(function () use ($request) {
+            $inventory = Inventory::firstOrCreate(
+                ['product_id' => $request->product_id, 'branch_id' => $request->branch_id],
+                ['quantity' => 0]
+            );
 
-        if ($request->action === 'decrease' && $inventory->quantity < $request->quantity) {
-            return back()->with('error', 'Insufficient stock.');
-        }
+            // Re-fetch with lock to prevent race condition
+            $inventory = Inventory::where('id', $inventory->id)->lockForUpdate()->first();
 
-        DB::transaction(function () use ($request, $inventory) {
+            if ($request->action === 'decrease' && $inventory->quantity < $request->quantity) {
+                return back()->with('error', 'Insufficient stock.');
+            }
+
             if ($request->action === 'increase') {
                 $inventory->increment('quantity', $request->quantity);
             } else {
@@ -51,11 +54,11 @@ class InventoryController extends Controller
                 'action' => $request->action,
                 'quantity' => $request->quantity,
             ]);
+
+            event(new StockUpdated($inventory, "Stock {$request->action}d for {$inventory->product->name}"));
+
+            return back()->with('success', 'Stock updated successfully.');
         });
-
-        event(new StockUpdated($inventory, "Stock {$request->action}d for {$inventory->product->name}"));
-
-        return back()->with('success', 'Stock updated successfully.');
     }
 
     public function transferStock(Request $request)
@@ -67,21 +70,23 @@ class InventoryController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $fromInventory = Inventory::where('product_id', $request->product_id)
-            ->where('branch_id', $request->from_branch_id)
-            ->first();
+        return DB::transaction(function () use ($request) {
+            $fromInventory = Inventory::where('product_id', $request->product_id)
+                ->where('branch_id', $request->from_branch_id)
+                ->lockForUpdate()
+                ->first();
 
-        if (!$fromInventory || $fromInventory->quantity < $request->quantity) {
-            return back()->with('error', 'Insufficient stock in source branch.');
-        }
+            if (!$fromInventory || $fromInventory->quantity < $request->quantity) {
+                return back()->with('error', 'Insufficient stock in source branch.');
+            }
 
-        DB::transaction(function () use ($request, $fromInventory) {
             $fromInventory->decrement('quantity', $request->quantity);
             
             $toInventory = Inventory::firstOrCreate(
                 ['product_id' => $request->product_id, 'branch_id' => $request->to_branch_id],
                 ['quantity' => 0]
             );
+            $toInventory = Inventory::where('id', $toInventory->id)->lockForUpdate()->first();
             $toInventory->increment('quantity', $request->quantity);
 
             StockLog::create([
@@ -100,8 +105,8 @@ class InventoryController extends Controller
 
             event(new StockUpdated($fromInventory, "Transferred {$request->quantity} {$fromInventory->product->name} from Branch ID {$request->from_branch_id}"));
             event(new StockUpdated($toInventory, "To Branch ID {$request->to_branch_id}"));
-        });
 
-        return back()->with('success', 'Stock transferred successfully.');
+            return back()->with('success', 'Stock transferred successfully.');
+        });
     }
 }

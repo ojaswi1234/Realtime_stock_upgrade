@@ -20,7 +20,7 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         
-        if ($user->role === 'admin') {
+        if (in_array($user->role, ['admin', 'super_admin'])) {
             // Sales trend for last 7 days
             $salesTrend = Sale::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total_price) as total'))
                 ->where('created_at', '>=', now()->subDays(7))
